@@ -205,14 +205,7 @@ public class TrackCommand implements CommandExecutor, Listener
             }
         }
 
-        Collections.sort(counterList, new Comparator<LocationCounter>()
-        {
-            @Override
-            public int compare(LocationCounter o1, LocationCounter o2)
-            {
-                return Integer.compare(o2.getCount(), o1.getCount());
-            }
-        });
+        Collections.sort(counterList, (o1, o2) -> Integer.compare(o2.getCount(), o1.getCount()));
         nameToCounterList.put(player.getName(), counterList);
 
         player.sendMessage(EntityTracker.GOOD + "Report for " + type.getSimpleName() + ":");

@@ -51,14 +51,7 @@ public class TrackSumCommand implements CommandExecutor
 
         ArrayList<Map.Entry<Class<? extends Entity>, Integer>> summaryList =
             new ArrayList<>(typeCountMap.entrySet());
-        Collections.sort(summaryList, new Comparator<Map.Entry<Class<? extends Entity>, Integer>>()
-        {
-            @Override
-            public int compare(Map.Entry<Class<? extends Entity>, Integer> o1, Map.Entry<Class<? extends Entity>, Integer> o2)
-            {
-                return Integer.compare(o2.getValue(), o1.getValue());
-            }
-        });
+        Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
         player.sendMessage(EntityTracker.GOOD + "Summary (Type, Amount):");
 
