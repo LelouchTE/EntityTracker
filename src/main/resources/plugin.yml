@@ -1,0 +1,12 @@
+name: EntityTracker
+main: com.yahoo.tracebachi.EntityTracker.EntityTracker
+author: Trace Bachi (BigBossZee, tracebachi@yahoo.com)
+version: 1.8
+commands:
+  track:
+    description: Output the top locations where entities of a type are located.
+  tracksum:
+    description: Output a summary amount of all the entities in the world.
+permissions:
+  EntityTracker.Use:
+    description: Allows the use of the /track and /tracksum command.
