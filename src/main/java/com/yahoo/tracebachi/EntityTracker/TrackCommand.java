@@ -1,12 +1,12 @@
 package com.yahoo.tracebachi.EntityTracker;
 
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_7_R4.*;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +26,7 @@ public class TrackCommand implements CommandExecutor, Listener
     {
         addType("Item", EntityItem.class);
         addType("XPOrb", EntityExperienceOrb.class);
+        addType("ThrownEgg", EntityEgg.class);
         addType("LeashKnot", EntityLeash.class);
         addType("Painting", EntityPainting.class);
         addType("Arrow", EntityArrow.class);
@@ -39,8 +40,9 @@ public class TrackCommand implements CommandExecutor, Listener
         addType("ItemFrame", EntityItemFrame.class);
         addType("WitherSkull", EntityWitherSkull.class);
         addType("PrimedTnt", EntityTNTPrimed.class);
-        addType("FallingSand", EntityTNTPrimed.class);
+        addType("FallingSand", EntityFallingBlock.class);
         addType("FireworksRocketEntity", EntityFireworks.class);
+        addType("ArmorStand", EntityArmorStand.class);
         addType("Boat", EntityBoat.class);
         addType("MinecartRideable", EntityMinecartRideable.class);
         addType("MinecartChest", EntityMinecartChest.class);
@@ -68,6 +70,8 @@ public class TrackCommand implements CommandExecutor, Listener
         addType("WitherBoss", EntityWither.class);
         addType("Bat", EntityBat.class);
         addType("Witch", EntityWitch.class);
+        addType("Endermite", EntityEndermite.class);
+        addType("Guardian", EntityGuardian.class);
         addType("Pig", EntityPig.class);
         addType("Sheep", EntitySheep.class);
         addType("Cow", EntityCow.class);
@@ -79,6 +83,7 @@ public class TrackCommand implements CommandExecutor, Listener
         addType("Ozelot", EntityOcelot.class);
         addType("VillagerGolem", EntityIronGolem.class);
         addType("EntityHorse", EntityHorse.class);
+        addType("Rabbit", EntityRabbit.class);
         addType("Villager", EntityVillager.class);
         addType("EnderCrystal", EntityEnderCrystal.class);
     }
@@ -205,14 +210,7 @@ public class TrackCommand implements CommandExecutor, Listener
             }
         }
 
-        Collections.sort(counterList, new Comparator<LocationCounter>()
-        {
-            @Override
-            public int compare(LocationCounter o1, LocationCounter o2)
-            {
-                return Integer.compare(o2.getCount(), o1.getCount());
-            }
-        });
+        Collections.sort(counterList, (o1, o2) -> Integer.compare(o2.getCount(), o1.getCount()));
         nameToCounterList.put(player.getName(), counterList);
 
         player.sendMessage(EntityTracker.GOOD + "Report for " + type.getSimpleName() + ":");

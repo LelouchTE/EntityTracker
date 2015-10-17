@@ -1,11 +1,11 @@
 package com.yahoo.tracebachi.EntityTracker;
 
-import net.minecraft.server.v1_7_R4.Entity;
+import net.minecraft.server.v1_8_R3.Entity;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public class TrackSumCommand implements CommandExecutor
         HashMap<Class<? extends Entity>, Integer> typeCountMap = new HashMap<>();
         CraftWorld craftWorld = (CraftWorld) player.getWorld();
 
-        for(Entity entity : (List<Entity>) craftWorld.getHandle().entityList)
+        for(Entity entity : craftWorld.getHandle().entityList)
         {
             Class<? extends Entity> entityClass = entity.getClass();
             Integer count = typeCountMap.get(entityClass);
@@ -51,14 +51,7 @@ public class TrackSumCommand implements CommandExecutor
 
         ArrayList<Map.Entry<Class<? extends Entity>, Integer>> summaryList =
             new ArrayList<>(typeCountMap.entrySet());
-        Collections.sort(summaryList, new Comparator<Map.Entry<Class<? extends Entity>, Integer>>()
-        {
-            @Override
-            public int compare(Map.Entry<Class<? extends Entity>, Integer> o1, Map.Entry<Class<? extends Entity>, Integer> o2)
-            {
-                return Integer.compare(o2.getValue(), o1.getValue());
-            }
-        });
+        Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
         player.sendMessage(EntityTracker.GOOD + "Summary (Type, Amount):");
 
