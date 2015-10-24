@@ -41,6 +41,11 @@ public class LocationCounter
         this.count = count;
     }
 
+    public void increment()
+    {
+        this.count++;
+    }
+
     @Override
     public boolean equals(Object obj)
     {

@@ -1,7 +1,7 @@
-name: EntityTracker
-main: com.yahoo.tracebachi.EntityTracker.EntityTracker
+name: EntityTrackerPlugin
+main: com.yahoo.tracebachi.EntityTracker.EntityTrackerPlugin
 author: Trace Bachi (BigBossZee, tracebachi@yahoo.com)
-version: 1.8
+version: 1.1
 commands:
   track:
     description: Output the top locations where entities of a type are located.
