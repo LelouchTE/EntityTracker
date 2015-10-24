@@ -11,7 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +20,7 @@ import java.util.List;
 /**
  * Created by Trace Bachi (BigBossZee) on 8/19/2015.
  */
-public class TrackCommand implements CommandExecutor, Listener
+public class TrackCommand implements CommandExecutor
 {
     private final HashMap<String, Class<? extends Entity>> nameToClass = new HashMap<>();
     private final TrackListener listener;

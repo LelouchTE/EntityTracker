@@ -29,9 +29,9 @@ public class EntityTrackerPlugin extends JavaPlugin implements Listener
     public void onEnable()
     {
         trackListener = new TrackListener();
+        getServer().getPluginManager().registerEvents(trackListener, this);
         trackCommand = new TrackCommand(trackListener);
         getCommand("track").setExecutor(trackCommand);
-        getServer().getPluginManager().registerEvents(trackCommand, this);
 
         trackSumCommand = new TrackSumCommand();
         getCommand("tracksum").setExecutor(trackSumCommand);
