@@ -8,6 +8,10 @@ import org.bukkit.World;
  */
 public class LocationCounter
 {
+    public static double xLength = 24.0D;
+    public static double yLength = 24.0D;
+    public static double zLength = 24.0D;
+
     private double x;
     private double y;
     private double z;
@@ -62,8 +66,8 @@ public class LocationCounter
 
     private boolean nearEnough(LocationCounter counter)
     {
-        return Math.abs(x - counter.x) <= 24.0 &&
-            Math.abs(y - counter.y) <= 24.0 &&
-            Math.abs(z - counter.z) <= 24.0;
+        return Math.abs(x - counter.x) <= xLength &&
+            Math.abs(y - counter.y) <= yLength &&
+            Math.abs(z - counter.z) <= zLength;
     }
 }

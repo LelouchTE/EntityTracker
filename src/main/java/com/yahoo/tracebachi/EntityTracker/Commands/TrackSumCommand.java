@@ -2,15 +2,20 @@ package com.yahoo.tracebachi.EntityTracker.Commands;
 
 import com.yahoo.tracebachi.EntityTracker.EntityTrackerPlugin;
 import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.TileEntity;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Trace Bachi (BigBossZee) on 8/19/2015.
@@ -26,7 +31,7 @@ public class TrackSumCommand implements CommandExecutor
             return true;
         }
 
-        if(!sender.hasPermission("EntityTrackerPlugin.Use"))
+        if(!sender.hasPermission("EntityTracker.Use"))
         {
             sender.sendMessage(EntityTrackerPlugin.BAD +
                 "You do not have permission to run that command.");
@@ -73,27 +78,28 @@ public class TrackSumCommand implements CommandExecutor
 
     private void trackTileEntities(Player player)
     {
-        HashMap<Class<? extends TileEntity>, Integer> typeCountMap = new HashMap<>();
-        CraftWorld craftWorld = (CraftWorld) player.getWorld();
+        HashMap<Material, Integer> typeCountMap = new HashMap<>();
 
-        for(TileEntity entity : craftWorld.getHandle().tileEntityList)
+        for(Chunk chunk : player.getWorld().getLoadedChunks())
         {
-            Class<? extends TileEntity> tileEntityClass = entity.getClass();
-            Integer count = typeCountMap.get(tileEntityClass);
-            typeCountMap.put(tileEntityClass, (count == null) ? 1 : count + 1);
+            for(BlockState state : chunk.getTileEntities())
+            {
+                Material material = state.getType();
+                Integer count = typeCountMap.get(material);
+                typeCountMap.put(material, (count == null) ? 1 : count + 1);
+            }
         }
 
-        ArrayList<Map.Entry<Class<? extends TileEntity>, Integer>> summaryList =
-            new ArrayList<>(typeCountMap.entrySet());
+        ArrayList<Map.Entry<Material, Integer>> summaryList = new ArrayList<>(typeCountMap.entrySet());
         Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
         player.sendMessage(EntityTrackerPlugin.GOOD + "Summary (Type, Amount):");
-        for(Map.Entry<Class<? extends TileEntity>, Integer> entry : summaryList)
+        for(Map.Entry<Material, Integer> entry : summaryList)
         {
             int count = entry.getValue();
             if(count > 0)
             {
-                player.sendMessage(ChatColor.GRAY + " " + entry.getKey().getSimpleName() + ": " + ChatColor.WHITE + count);
+                player.sendMessage(ChatColor.GRAY + " " + entry.getKey().toString() + ": " + ChatColor.WHITE + count);
             }
         }
     }
