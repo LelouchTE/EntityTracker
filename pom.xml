@@ -10,9 +10,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <groupId>localrepo</groupId>
+            <artifactId>spigot-jar</artifactId>
+            <version>1.8-R3</version>
         </dependency>
     </dependencies>
 
