@@ -35,7 +35,7 @@ public class EntityTrackerPlugin extends JavaPlugin implements Listener
     public void onLoad()
     {
         File file = new File(getDataFolder(), "config.yml");
-        if(!file.exists()) { reloadConfig(); }
+        if(!file.exists()) { saveConfig(); }
     }
 
     @Override
