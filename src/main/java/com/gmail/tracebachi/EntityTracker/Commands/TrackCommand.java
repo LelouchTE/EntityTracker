@@ -1,14 +1,13 @@
-package com.yahoo.tracebachi.EntityTracker.Commands;
+package com.gmail.tracebachi.EntityTracker.Commands;
 
-import com.yahoo.tracebachi.EntityTracker.EntityTrackerPlugin;
-import com.yahoo.tracebachi.EntityTracker.Listeners.TrackListener;
-import com.yahoo.tracebachi.EntityTracker.LocationCounter;
+import com.gmail.tracebachi.EntityTracker.PlayerListener;
+import com.gmail.tracebachi.EntityTracker.AreaCounter;
+import com.gmail.tracebachi.EntityTracker.ParseUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
@@ -16,16 +15,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.gmail.tracebachi.EntityTracker.EntityTracker.BAD;
+import static com.gmail.tracebachi.EntityTracker.EntityTracker.GOOD;
 
 /**
  * Created by Trace Bachi (BigBossZee) on 8/19/2015.
  */
-public class TrackCommand implements CommandExecutor
+public class TrackCommand implements TabExecutor
 {
     private final HashMap<String, Class<? extends Entity>> nameToClass = new HashMap<>();
-    private final TrackListener listener;
+    private final PlayerListener listener;
 
-    public TrackCommand(TrackListener listener)
+    public TrackCommand(PlayerListener listener)
     {
         this.listener = listener;
 
@@ -94,107 +97,77 @@ public class TrackCommand implements CommandExecutor
     }
 
     @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+    {
+        String lowerArg = strings[0].toLowerCase();
+
+        return nameToClass.keySet().stream()
+            .filter(name -> name.startsWith(lowerArg))
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args)
     {
         if(!(sender instanceof Player))
         {
-            sender.sendMessage(EntityTrackerPlugin.BAD + "This command can only be run by players.");
+            sender.sendMessage(BAD + "This command can only be run by players.");
             return true;
         }
 
         if(!sender.hasPermission("EntityTracker.Use"))
         {
-            sender.sendMessage(EntityTrackerPlugin.BAD + "You do not have permission to run that command.");
+            sender.sendMessage(BAD + "You do not have permission to run that command.");
             return true;
         }
 
         Player player = (Player) sender;
 
-        if(args.length >= 2 && args[0].equalsIgnoreCase("tp"))
+        if(args.length < 1)
         {
-            Integer index = parseInteger(args[1]);
-            if(index == null || index <= 0)
-            {
-                sender.sendMessage(EntityTrackerPlugin.BAD + "Number must be greater than 0.");
-                return true;
-            }
-
-            runTrackTpCommand(player, index);
-        }
-        else if(args.length >= 1)
-        {
-            Class<? extends Entity> type = nameToClass.get(args[0].toLowerCase());
-            if(type == null)
-            {
-                sender.sendMessage(EntityTrackerPlugin.BAD + args[0] + " is not a valid entity type.");
-                return true;
-            }
-
-            Integer displaySize = 3;
-            if(args.length >= 2)
-            {
-                Integer tempDisplaySize = parseInteger(args[1]);
-                if(tempDisplaySize == null || tempDisplaySize <= 0)
-                {
-                    sender.sendMessage(EntityTrackerPlugin.BAD + "Number must be greater than 0.");
-                    return true;
-                }
-                else
-                {
-                    displaySize = tempDisplaySize;
-                }
-            }
-
-            runTrackCommand(player, type, displaySize);
-        }
-        else
-        {
-            sender.sendMessage(EntityTrackerPlugin.BAD + "Commands:");
-            sender.sendMessage(ChatColor.GRAY + "  /track [type] [display size]");
-            sender.sendMessage(ChatColor.GRAY + "  /track tp [number]");
+            sender.sendMessage(BAD + "/track <type> <display size>");
             return true;
         }
-        return true;
-    }
 
-    private void runTrackTpCommand(Player player, int listIndex)
-    {
-        List<LocationCounter> locList = listener.get(player.getName());
+        Class<? extends Entity> type = nameToClass.get(args[0].toLowerCase());
 
-        if(locList != null)
+        if(type == null)
         {
-            if(listIndex > locList.size() || listIndex < 1)
+            sender.sendMessage(BAD + args[0] + " is not a valid entity type.");
+            return true;
+        }
+
+        Integer displaySize = 3;
+
+        if(args.length >= 2)
+        {
+            Integer tempDisplaySize = ParseUtil.parseInteger(args[1]);
+
+            if(tempDisplaySize == null || tempDisplaySize < 1)
             {
-                player.sendMessage(EntityTrackerPlugin.BAD +
-                    "Invalid index. It must be between 1 ~ " + locList.size());
+                sender.sendMessage(BAD + "Number must be greater than 0.");
+                return true;
             }
             else
             {
-                LocationCounter counter = locList.get(listIndex - 1);
-                Location location = counter.getLocation(player.getWorld());
-
-                player.sendMessage(EntityTrackerPlugin.GOOD +
-                    "Teleporting to #" + listIndex);
-                player.teleport(location);
+                displaySize = tempDisplaySize;
             }
         }
-        else
-        {
-            player.sendMessage(EntityTrackerPlugin.BAD +
-                "No track list found. Re-run the /track command to build it.");
-        }
+
+        runTrackCommand(player, type, displaySize);
+        return true;
     }
 
     private void runTrackCommand(Player player, Class<? extends Entity> type, int listDisplaySize)
     {
-        List<LocationCounter> counterList = new ArrayList<>();
+        List<AreaCounter> counterList = new ArrayList<>();
         CraftWorld craftWorld = (CraftWorld) player.getWorld();
 
         for(Entity entity : craftWorld.getHandle().entityList)
         {
             if(type.equals(entity.getClass()))
             {
-                LocationCounter counter = new LocationCounter(entity.locX, entity.locY, entity.locZ);
+                AreaCounter counter = new AreaCounter(entity.locX, entity.locY, entity.locZ);
                 int index = counterList.indexOf(counter);
 
                 if(index >= 0)
@@ -211,29 +184,18 @@ public class TrackCommand implements CommandExecutor
         Collections.sort(counterList, (o1, o2) -> Integer.compare(o2.getCount(), o1.getCount()));
         listener.put(player.getName(), counterList);
 
-        player.sendMessage(EntityTrackerPlugin.GOOD + "Report for " + type.getSimpleName() + ":");
+        player.sendMessage(GOOD + "Report for " + type.getSimpleName() + ":");
+
         for(int i = 0; i < listDisplaySize && i < counterList.size(); ++i)
         {
-            LocationCounter counter = counterList.get(i);
+            AreaCounter counter = counterList.get(i);
             player.sendMessage(ChatColor.GRAY + " #" + ChatColor.WHITE + (i + 1) + ChatColor.GRAY +
                 " : " + counter.toString());
         }
     }
 
-    private void addType(String name, Class clazz)
+    private void addType(String name, Class<? extends Entity> clazz)
     {
         nameToClass.put(name.toLowerCase(), clazz);
-    }
-
-    private Integer parseInteger(String str)
-    {
-        try
-        {
-            return Integer.parseInt(str);
-        }
-        catch(NumberFormatException ex)
-        {
-            return null;
-        }
     }
 }

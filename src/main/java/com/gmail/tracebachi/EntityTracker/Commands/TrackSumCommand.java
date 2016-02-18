@@ -1,48 +1,57 @@
-package com.yahoo.tracebachi.EntityTracker.Commands;
+package com.gmail.tracebachi.EntityTracker.Commands;
 
-import com.yahoo.tracebachi.EntityTracker.EntityTrackerPlugin;
 import net.minecraft.server.v1_8_R3.Entity;
-import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static com.gmail.tracebachi.EntityTracker.EntityTracker.BAD;
+import static com.gmail.tracebachi.EntityTracker.EntityTracker.GOOD;
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.WHITE;
 
 /**
  * Created by Trace Bachi (BigBossZee) on 8/19/2015.
  */
-public class TrackSumCommand implements CommandExecutor
+public class TrackSumCommand implements TabExecutor
 {
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+    {
+        return Arrays.asList("entity", "tile");
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args)
     {
         if(!(sender instanceof Player))
         {
-            sender.sendMessage(EntityTrackerPlugin.BAD + "This command can only be run by players.");
+            sender.sendMessage(BAD + "This command can only be run by players.");
             return true;
         }
 
         if(!sender.hasPermission("EntityTracker.Use"))
         {
-            sender.sendMessage(EntityTrackerPlugin.BAD +
-                "You do not have permission to run that command.");
+            sender.sendMessage(BAD + "You do not have permission to run that command.");
             return true;
         }
 
-        if(args.length == 0)
+        if(args.length < 1)
+        {
+            sender.sendMessage(GOOD + "/tracksum <entity|tile>");
+        }
+        else if(args[0].equalsIgnoreCase("entity"))
         {
             trackNormalEntities((Player) sender);
         }
-        else if(args.length >= 1 && args[0].equalsIgnoreCase("tile"))
+        else if(args[0].equalsIgnoreCase("tile"))
         {
             trackTileEntities((Player) sender);
         }
@@ -65,13 +74,16 @@ public class TrackSumCommand implements CommandExecutor
             new ArrayList<>(typeCountMap.entrySet());
         Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
-        player.sendMessage(EntityTrackerPlugin.GOOD + "Summary (Type, Amount):");
+        player.sendMessage(GOOD + "Summary (Type, Amount):");
+
         for(Map.Entry<Class<? extends Entity>, Integer> entry : summaryList)
         {
             int count = entry.getValue();
             if(count > 0)
             {
-                player.sendMessage(ChatColor.GRAY + " " + entry.getKey().getSimpleName() + ": " + ChatColor.WHITE + count);
+                player.sendMessage(GRAY +
+                    " " + entry.getKey().getSimpleName() +
+                    ": " + WHITE + count);
             }
         }
     }
@@ -93,13 +105,16 @@ public class TrackSumCommand implements CommandExecutor
         ArrayList<Map.Entry<Material, Integer>> summaryList = new ArrayList<>(typeCountMap.entrySet());
         Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
-        player.sendMessage(EntityTrackerPlugin.GOOD + "Summary (Type, Amount):");
+        player.sendMessage(GOOD + "Summary (Type, Amount):");
+
         for(Map.Entry<Material, Integer> entry : summaryList)
         {
             int count = entry.getValue();
             if(count > 0)
             {
-                player.sendMessage(ChatColor.GRAY + " " + entry.getKey().toString() + ": " + ChatColor.WHITE + count);
+                player.sendMessage(GRAY +
+                    " " + entry.getKey().toString() +
+                    ": " + WHITE + count);
             }
         }
     }
