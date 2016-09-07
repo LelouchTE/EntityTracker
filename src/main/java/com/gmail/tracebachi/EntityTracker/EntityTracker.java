@@ -1,6 +1,22 @@
+/*
+ * This file is part of EntityTracker.
+ *
+ * DeltaRedis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * EntityTracker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EntityTracker.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.gmail.tracebachi.EntityTracker;
 
-import com.gmail.tracebachi.EntityTracker.Commands.TrackCommand;
+import com.gmail.tracebachi.EntityTracker.Commands.TrackEntityCommand;
 import com.gmail.tracebachi.EntityTracker.Commands.TrackSumCommand;
 import com.gmail.tracebachi.EntityTracker.Commands.TrackTileCommand;
 import com.gmail.tracebachi.EntityTracker.Commands.TrackTpCommand;
@@ -25,7 +41,7 @@ public class EntityTracker extends JavaPlugin implements Listener
         "&8[&c!&8]&c Tracker &8[&c!&8] &7");
 
     private TrackTpCommand trackTpCommand;
-    private TrackCommand trackCommand;
+    private TrackEntityCommand trackEntityCommand;
     private TrackTileCommand trackTileCommand;
     private TrackSumCommand trackSumCommand;
     private PlayerListener playerListener;
@@ -47,8 +63,8 @@ public class EntityTracker extends JavaPlugin implements Listener
         trackTpCommand = new TrackTpCommand(playerListener);
         getCommand("tracktp").setExecutor(trackTpCommand);
 
-        trackCommand = new TrackCommand(playerListener);
-        getCommand("track").setExecutor(trackCommand);
+        trackEntityCommand = new TrackEntityCommand(playerListener);
+        getCommand("trackentity").setExecutor(trackEntityCommand);
 
         trackTileCommand = new TrackTileCommand(playerListener);
         getCommand("tracktile").setExecutor(trackTileCommand);
@@ -80,7 +96,7 @@ public class EntityTracker extends JavaPlugin implements Listener
     {
         trackSumCommand = null;
         trackTileCommand = null;
-        trackCommand = null;
+        trackEntityCommand = null;
         trackTpCommand = null;
         playerListener = null;
     }

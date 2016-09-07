@@ -1,11 +1,11 @@
 name: EntityTracker
 main: com.gmail.tracebachi.EntityTracker.EntityTracker
 author: Trace Bachi (BigBossZee, tracebachi@gmail.com)
-version: 1.3
+version: ${project.version}
 commands:
   tracktp:
     description: Teleports to an entity on previously generated list.
-  track:
+  trackentity:
     description: Output the top locations where entities of a type are located.
   tracktile:
     description: Output the top locations where tiles of a type are located.

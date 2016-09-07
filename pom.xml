@@ -6,17 +6,23 @@
 
     <groupId>com.gmail.tracebachi</groupId>
     <artifactId>EntityTracker</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 
     <dependencies>
         <dependency>
             <groupId>localrepo</groupId>
             <artifactId>spigot-jar</artifactId>
-            <version>1.8.8-b571</version>
+            <version>1.10.2</version>
         </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

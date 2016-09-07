@@ -1,13 +1,29 @@
+/*
+ * This file is part of EntityTracker.
+ *
+ * DeltaRedis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * EntityTracker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EntityTracker.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.gmail.tracebachi.EntityTracker.Commands;
 
-import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_10_R1.Entity;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -55,6 +71,7 @@ public class TrackSumCommand implements TabExecutor
         {
             trackTileEntities((Player) sender);
         }
+
         return true;
     }
 
@@ -102,7 +119,8 @@ public class TrackSumCommand implements TabExecutor
             }
         }
 
-        ArrayList<Map.Entry<Material, Integer>> summaryList = new ArrayList<>(typeCountMap.entrySet());
+        ArrayList<Map.Entry<Material, Integer>> summaryList =
+            new ArrayList<>(typeCountMap.entrySet());
         Collections.sort(summaryList, (o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()));
 
         player.sendMessage(GOOD + "Summary (Type, Amount):");
