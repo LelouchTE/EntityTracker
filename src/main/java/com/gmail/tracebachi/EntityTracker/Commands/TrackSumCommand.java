@@ -1,13 +1,13 @@
 package com.gmail.tracebachi.EntityTracker.Commands;
 
-import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_12_R1.Entity;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.*;

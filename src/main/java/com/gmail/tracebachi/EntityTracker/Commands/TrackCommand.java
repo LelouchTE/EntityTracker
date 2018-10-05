@@ -4,11 +4,11 @@ import com.gmail.tracebachi.EntityTracker.PlayerListener;
 import com.gmail.tracebachi.EntityTracker.AreaCounter;
 import com.gmail.tracebachi.EntityTracker.ParseUtil;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
